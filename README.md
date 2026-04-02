@@ -1,36 +1,33 @@
 <img src="/assets/img/OvermindLogo.png" width=825>
 
-[<img src="/assets/img/buttons/download.png" height=22>](https://github.com/bencbartlett/Overmind/releases)   [<img src="/assets/img/buttons/patchNotes.png" height=22>](https://github.com/bencbartlett/Overmind/blob/master/CHANGELOG.md)   [<img src="/assets/img/buttons/documentation.png" height=22>](https://bencbartlett.github.io/overmind-docs/)   [<img src="/assets/img/buttons/wikipages.png" height=22>](https://github.com/bencbartlett/Overmind/wiki)   [<img src="/assets/img/buttons/slack.png" height=22>](https://screeps.slack.com/messages/overmind)   [<img src="/assets/img/buttons/issue.png" height=22>](https://github.com/bencbartlett/Overmind/issues/new)   [<img src="/assets/img/buttons/featureRequest.png" height=22>](https://github.com/bencbartlett/Overmind/issues/new?template=feature_request.md)
+[<img src="/assets/img/buttons/download.png" height=22>](https://github.com/grgisme/OvermindForged/releases)   [<img src="/assets/img/buttons/patchNotes.png" height=22>](CHANGELOG.md)   [<img src="/assets/img/buttons/documentation.png" height=22>](https://bencbartlett.github.io/overmind-docs/)
 
-### Current release: [Overmind v0.5.2 - Evolution](https://github.com/bencbartlett/Overmind/releases)   [![Build Status](https://travis-ci.org/bencbartlett/Overmind.svg?branch=master)](https://travis-ci.org/bencbartlett/Overmind)
+### Current release: [OvermindForged - Modernized Edition]
 
-- See the [changelog](https://github.com/bencbartlett/Overmind/blob/master/CHANGELOG.md) for patch notes
-- Documentation is available at the [documentation site](https://bencbartlett.github.io/overmind-docs/) and the [wiki](https://github.com/bencbartlett/Overmind/wiki)
-- Join the discussion in the [#overmind](https://screeps.slack.com/messages/overmind) Slack channel!
-- Read [blog posts](https://bencbartlett.wordpress.com/category/screeps/) about development
-- Submit an issue [here](https://github.com/bencbartlett/Overmind/issues/new) or request a feature [here](https://github.com/bencbartlett/Overmind/issues/new?template=feature_request.md)
-- Find me in game [here](https://screeps.com/a/#!/profile/Muon)
+- See the [changelog](CHANGELOG.md) for patch notes
+- Submit an issue or PR to help adapt the bot to the latest API features!
 
 ---
 
-# About Overmind
+# About OvermindForged
 
 <img align="right" src="/assets/img/exampleRoomBanner2.png" width=325>
 
-### What is Screeps?
+### What is OvermindForged?
 
-Screeps is an [MMO strategy game for programmers](https://screeps.com/). The core objective is to expand your colony, gathering resources and fighting other players along the way. To control your units, you code an AI in JavaScript; everything from moving, mining, building, fighting, and trading is entirely driven by your code. Because Screeps is an MMO, it takes place on a single server that runs 24/7, populated by every other player and their army of creeps. When you log off, your population continues buzzing away with whatever task you set them. Screeps pits your programming prowess head-to-head with other people to see who can think of the most efficient methods of completing tasks or imagine new ways to defeat enemies.
+**OvermindForged** is a modernized, community-driven revitalization of the legendary [Overmind](https://github.com/bencbartlett/Overmind) Screeps AI originally developed by Ben Bartlett. The Zerg-swarm intelligence architecture remains intact, but we are actively reforging internal APIs to ensure this bot can survive and thrive in modern Screeps environments. 
 
-### What is Overmind?
+*(Note: We will **not** be running this adaptation on the official Screeps MMO servers ourselves, but others are entirely welcome to use it!)*
 
-Overmind is my personal codebase that I run on the public server. The structure of the AI is themed loosely around the [Zerg's swarm intelligence](http://starcraft.wikia.com/wiki/Overlord) from Starcraft. [Overlords](https://github.com/bencbartlett/Overmind/blob/master/src/overlords/Overlord.ts) orchestrate Creep actions within each [Colony](https://github.com/bencbartlett/Overmind/blob/master/src/Colony.ts), and the colony [Overseer](https://github.com/bencbartlett/Overmind/blob/master/src/Overseer.ts) places [Directives](https://github.com/bencbartlett/Overmind/blob/master/src/directives/Directive.ts) to adapt to stimuli. Finally, the [Assimilator](https://github.com/bencbartlett/Overmind/blob/master/src/assimilation/Assimilator_obfuscated.js) allows all players running Overmind to act as a collective hivemind, sharing creeps and resources and responding jointly to a master ledger of all directives shared by all players.
+### Integrated Community PRs & Issue Fixes
+To combat the stall problem and get the bot compatible with modern server API standards, the following critical patches originally submitted by the Screeps community have been integrated into OvermindForged:
 
-The AI is entirely automated, although it can also run in manual or semiautomatic mode. The [latest release](https://github.com/bencbartlett/Overmind/releases) should work right out of the box; however, if you find something broken, please [submit an issue](https://github.com/bencbartlett/Overmind/issues/new) and I'll try to fix it.
+- **PR #212 (Update to the new Store interface)**: Replaces deprecated `.carry` and `.energy` usages across the logistics network layout with the strict `Store` API required by Screeps 4.0+.
+- **PR #191 (Refactor deprecated isRoomAvailable)**: Updates scouting logic to accommodate the removal of `Game.map.isRoomAvailable`, natively using the new `getRoomStatus` mappings.
+- *(More legacy PR tracking and mechanic upgrades coming soon!)*
 
 ### Can I use Overmind as my bot?
-If you're new to Screeps, I would definitely recommend writing your own AI: most of the fun of the game is programming your own bot and watching your little ant farm run! However, I've tried to make the codebase readable and well-documented, so feel free to fork the project or use it as inspiration when writing your AI.
-
-If you still want to use Overmind on the public server, that's okay too - [there are a number of people already doing this](http://www.leagueofautomatednations.com/map/shard2/bots). But please realize that using a mature AI like this gives you a huge advantage over other new players, so don't go out of your way to ruin someone else's fun. In the future, I will be implementing methods for novice players to opt out of excessive aggression by Overmind bots (as long as they don't start a conflict and stay out of its way).
+If you're new to Screeps, we recommend writing your own AI. However, if you want to use OvermindForged on a private server or the MMO, feel free!
 
 # Installation
 
