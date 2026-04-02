@@ -22,8 +22,10 @@
 ### Integrated Community PRs & Issue Fixes
 To combat the stall problem and get the bot compatible with modern server API standards, the following critical patches originally submitted by the Screeps community have been integrated into OvermindForged:
 
-- **PR #212 (Update to the new Store interface)**: Replaces deprecated `.carry` and `.energy` usages across the logistics network layout with the strict `Store` API required by Screeps 4.0+.
-- **PR #191 (Refactor deprecated isRoomAvailable)**: Updates scouting logic to accommodate the removal of `Game.map.isRoomAvailable`, natively using the new `getRoomStatus` mappings.
+- **PR #212 (Update to the new Store interface)** *by @wmonk*: Replaces deprecated `.carry` and `.energy` usages across the logistics network layout with the strict `Store` API required by Screeps 4.0+.
+- **PR #191 (Refactor deprecated isRoomAvailable)** *by @Mirzian*: Updates scouting logic to accommodate the removal of `Game.map.isRoomAvailable`, natively using the new `getRoomStatus` mappings.
+- **PR #183 (Fix vacatePos movement bug)** *by @bittflo (Florian)*: Fixes a critical movement evaluation bug where any Zerg instances failed to respect the forced `vacatePos` override, causing cascading blockages.
+- **PR #177 (cherry pick: 0 = false, check for key exists)** *by @ikiris (Blake Dunlap)*: Fixes a nasty JS truthy bug evaluated as `0 = false` that prevents managers from shifting efficiently.
 - *(More legacy PR tracking and mechanic upgrades coming soon!)*
 
 ### Can I use Overmind as my bot?
