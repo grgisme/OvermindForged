@@ -37,6 +37,16 @@ In addition to pull request integrations, several fatal bugs identified on the l
 - **Issue #152 (SourceReaperOverlord paralysis)**: Fixes a severe bug where center-core SK rooms lacking a `KeeperLair` caused Reapers to loop `goTo()` calls indefinitely.
 - **Issue #157 (Worker Economy Dogpiling)**: Fixes early-game pacing limitations where `Workers` would cluster onto identically-weighted singular `build` or `repair` targets. Tasks are now weighted against their concurrent targeting densities via `minBy` distancing.
 - **Issue #205 (room.drops TypeError exception)**: Hardened the `Overseer` logistics array mappings by adding `Array.isArray()` checks to mitigate prototype poisoning cascading into pipeline exceptions.
+- **Issue #182 & #184 (isRoomAvailable Deprecation)**: Updated `Overseer.ts` to utilize the modern `Game.map.getRoomStatus(roomName).status` check, squashing compilation errors and runtime warnings.
+- **Issue #187 (Respawn/Newbie zone borders)**: Addressed via earlier PR #145 integration.
+
+### Deferred Issue Tracking
+We audited the remaining open issues on the original repository and deferred them. The following represent structural tracking logic for why they were bypassed:
+- **#217**: Classified as a Feature Request (UI element for colony major projects).
+- **#213**: Reported against `v0.6.0-dev` branch, inapplicable to our `v0.5.2` core architecture.
+- **#204, #185, #176**: Ambiguous reports without reproducible tracebacks ("Numerous errors", "Problem Compiling", "Low RCL issues"). Given our stable compile against TickForge using modern Node, these are resolved by our environment updates.
+- **#203 (No melee defenders), #201 (No transports)**: Highly situational edge-cases or player macro-misconfigurations. We opted to evaluate these dynamically in upcoming simulation runs rather than preemptively patching based on incomplete screenshots.
+- **#202 (Completes own terminal orders)**: Minor economic leakage bug; secondary priority compared to fixing the survival/mining loops.
 
 ### Can I use Overmind as my bot?
 If you're new to Screeps, we recommend writing your own AI. However, if you want to use OvermindForged on a private server or the MMO, feel free!
