@@ -285,7 +285,7 @@ export class Zerg {
 	}
 
 	move(direction: DirectionConstant, force = false) {
-		if (!this.blockMovement && !force) {
+		if (!this.blockMovement || force) {
 			const result = this.creep.move(direction);
 			if (result == OK) {
 				if (!this.actionLog.move) this.actionLog.move = true;

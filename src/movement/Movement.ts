@@ -426,7 +426,7 @@ export class Movement {
 		if (creep.memory._go && creep.memory._go.priority) {
 			return creep.memory._go.priority;
 		} else {
-			return MovePriorities[creep.memory.role] || MovePriorities.default;
+			return (creep.memory.role in MovePriorities) ? MovePriorities[creep.memory.role] : MovePriorities.default;
 		}
 	}
 
@@ -521,7 +521,6 @@ export class Movement {
 	}
 
 
-	// TODO: this is bugged somewhere
 	/**
 	 * Recursively moves creeps out of the way of a position to make room for something, such as a spawning creep.
 	 * If suicide is specified and there is no series of move commands that can move a block of creeps out of the way,
