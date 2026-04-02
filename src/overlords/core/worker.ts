@@ -220,7 +220,7 @@ export class WorkerOverlord extends Overlord {
 	}
 
 	private repairActions(worker: Zerg): boolean {
-		const target = worker.pos.findClosestByMultiRoomRange(this.repairStructures);
+		const target = minBy(this.repairStructures, s => worker.pos.getMultiRoomRangeTo(s.pos) + 50 * (s.targetedBy || []).length);
 		if (target) {
 			worker.task = Tasks.repair(target);
 			return true;
@@ -233,7 +233,8 @@ export class WorkerOverlord extends Overlord {
 		const groupedSites = _.groupBy(this.constructionSites, site => site.structureType);
 		for (const structureType of BuildPriorities) {
 			if (groupedSites[structureType]) {
-				const target = worker.pos.findClosestByMultiRoomRange(groupedSites[structureType]);
+				const target = minBy(groupedSites[structureType], 
+					site => worker.pos.getMultiRoomRangeTo(site.pos) + 50 * (site.targetedBy || []).length);
 				if (target) {
 					worker.task = Tasks.build(target);
 					return true;

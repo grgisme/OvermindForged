@@ -76,7 +76,8 @@ export class SourceReaperOverlord extends CombatOverlord {
 	private handleReaper(reaper: CombatZerg) {
 
 		// Go to keeper room
-		if (!this.targetLair || !this.room || reaper.room != this.room || reaper.pos.isEdge) {
+		const noLairNeeded = this.room && this.room.keeperLairs.length == 0;
+		if ((!this.targetLair && !noLairNeeded) || !this.room || reaper.room != this.room || reaper.pos.isEdge) {
 			// log.debugCreep(reaper, `Going to room!`);
 			reaper.healSelfIfPossible();
 			reaper.goTo(this.pos);
@@ -116,13 +117,17 @@ export class SourceReaperOverlord extends CombatOverlord {
 				reaper.attack(nearestHostile);
 				reaper.move(reaper.pos.getDirectionTo(nearestHostile));
 			} else {
-				const keeper = this.targetLair.pos.findClosestByLimitedRange(this.room.sourceKeepers, 7);
+				const keeper = this.targetLair ? this.targetLair.pos.findClosestByLimitedRange(this.room.sourceKeepers, 7) : reaper.pos.findClosestByRange(this.room.sourceKeepers);
 				if (keeper) { // attack the source keeper
 					// stop and heal at range 4 if needed
 					const approachRange = (reaper.hits == reaper.hitsMax || reaper.pos.getRangeTo(keeper) <= 3) ? 1 : 4;
 					reaper.goTo(keeper, {range: approachRange});
 				} else { // travel to next lair
-					reaper.goTo(this.targetLair, {range: 1});
+					if (this.targetLair) {
+						reaper.goTo(this.targetLair, {range: 1});
+					} else {
+						reaper.park(this.pos, true);
+					}
 				}
 			}
 			reaper.healSelfIfPossible();
@@ -133,7 +138,8 @@ export class SourceReaperOverlord extends CombatOverlord {
 	private handleDefender(defender: CombatZerg) {
 
 		// Go to keeper room
-		if (!this.targetLair || !this.room || defender.room != this.room || defender.pos.isEdge) {
+		const noLairNeeded = this.room && this.room.keeperLairs.length == 0;
+		if ((!this.targetLair && !noLairNeeded) || !this.room || defender.room != this.room || defender.pos.isEdge) {
 			debug(defender, `Going to room!`);
 			defender.healSelfIfPossible();
 			defender.goToRoom(this.pos.roomName);
@@ -161,7 +167,7 @@ export class SourceReaperOverlord extends CombatOverlord {
 						repath      : 0.1
 					});
 				} else {
-					const keeper = this.targetLair.pos.findClosestByLimitedRange(this.room.sourceKeepers, 7);
+					const keeper = this.targetLair ? this.targetLair.pos.findClosestByLimitedRange(this.room.sourceKeepers, 7) : defender.pos.findClosestByRange(this.room.sourceKeepers);
 					if (keeper) { // attack the source keeper
 						const range = defender.pos.getRangeTo(keeper);
 						const keepAtRange = defender.hits < defender.hitsMax * .9 ? 4 : 3;
@@ -171,7 +177,11 @@ export class SourceReaperOverlord extends CombatOverlord {
 							defender.goTo(keeper, {maxRooms: 1, range: keepAtRange});
 						}
 					} else { // travel to next lair
-						defender.goTo(this.targetLair, {range: 5});
+						if (this.targetLair) {
+							defender.goTo(this.targetLair, {range: 5});
+						} else {
+							defender.park(this.pos, true);
+						}
 					}
 				}
 			} else {

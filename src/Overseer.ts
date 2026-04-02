@@ -76,12 +76,12 @@ export class Overseer implements IOverseer {
 				callback();
 			} catch (e) {
 				if (identifier) {
-					e.name = `Caught unhandled exception at ${'' + callback} (identifier: ${identifier}): \n`
-							 + e.name + '\n' + e.stack;
+					(e as any).name = `Caught unhandled exception at ${'' + callback} (identifier: ${identifier}): \n`
+							 + (e as any).name + '\n' + (e as any).stack;
 				} else {
-					e.name = `Caught unhandled exception at ${'' + callback}: \n` + e.name + '\n' + e.stack;
+					(e as any).name = `Caught unhandled exception at ${'' + callback}: \n` + (e as any).name + '\n' + (e as any).stack;
 				}
-				Overmind.exceptions.push(e);
+				Overmind.exceptions.push(e as Error);
 			}
 		} else {
 			callback();
@@ -147,7 +147,9 @@ export class Overseer implements IOverseer {
 		for (const room of colony.rooms) {
 			// Pick up all nontrivial dropped resources
 			for (const resourceType in room.drops) {
-				for (const drop of room.drops[resourceType]) {
+				const dropList = room.drops[resourceType];
+				if (!dropList || !Array.isArray(dropList)) continue;
+				for (const drop of dropList) {
 					if (drop.amount > LogisticsNetwork.settings.droppedEnergyThreshold
 						|| drop.resourceType != RESOURCE_ENERGY) {
 						colony.logisticsNetwork.requestOutput(drop);
@@ -157,8 +159,9 @@ export class Overseer implements IOverseer {
 		}
 		// Place a logistics request directive for every tombstone with non-empty store that isn't on a container
 		for (const tombstone of colony.tombstones) {
-			if (tombstone.store.getUsedCapacity() > LogisticsNetwork.settings.droppedEnergyThreshold
-				|| tombstone.store.getUsedCapacity() > tombstone.store.energy) {
+			const store = tombstone.store as any;
+			if (store.getUsedCapacity() > LogisticsNetwork.settings.droppedEnergyThreshold
+				|| store.getUsedCapacity() > store.energy) {
 				if (colony.bunker && tombstone.pos.isEqualTo(colony.bunker.anchor)) continue;
 				colony.logisticsNetwork.requestOutput(tombstone, {resourceType: 'all'});
 			}
@@ -250,7 +253,7 @@ export class Overseer implements IOverseer {
 			}
 			const neighboringRooms = _.values(Game.map.describeExits(roomName)) as string[];
 			const isReachableFromColony = _.any(neighboringRooms, r => colony.roomNames.includes(r));
-			return isReachableFromColony && isRoomAvailable(roomName);
+			return isReachableFromColony && (Game.map as any).getRoomStatus(roomName).status == 'normal';
 		});
 	}
 

@@ -32,6 +32,12 @@ To combat the stall problem and get the bot compatible with modern server API st
 - **PR #145 (Novice protection)** *by @mroy*: Adds League of Automated Nations querying to Cartographer bounding segment properties.
 - *(More legacy PR tracking and mechanic upgrades coming soon!)*
 
+### Integrated Community Issue Resolutions
+In addition to pull request integrations, several fatal bugs identified on the legacy issue tracker have been addressed to stabilize TickForge execution:
+- **Issue #152 (SourceReaperOverlord paralysis)**: Fixes a severe bug where center-core SK rooms lacking a `KeeperLair` caused Reapers to loop `goTo()` calls indefinitely.
+- **Issue #157 (Worker Economy Dogpiling)**: Fixes early-game pacing limitations where `Workers` would cluster onto identically-weighted singular `build` or `repair` targets. Tasks are now weighted against their concurrent targeting densities via `minBy` distancing.
+- **Issue #205 (room.drops TypeError exception)**: Hardened the `Overseer` logistics array mappings by adding `Array.isArray()` checks to mitigate prototype poisoning cascading into pipeline exceptions.
+
 ### Can I use Overmind as my bot?
 If you're new to Screeps, we recommend writing your own AI. However, if you want to use OvermindForged on a private server or the MMO, feel free!
 
