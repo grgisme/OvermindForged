@@ -33,7 +33,7 @@ export class TaskTransfer extends Task {
 
 	isValidTask() {
 		const amount = this.data.amount || 1;
-		const resourcesInCarry = this.creep.carry[this.data.resourceType] || 0;
+		const resourcesInCarry = this.creep.store[this.data.resourceType] || 0;
 		return resourcesInCarry >= amount;
 	}
 
@@ -41,9 +41,9 @@ export class TaskTransfer extends Task {
 		const amount = this.data.amount || 1;
 		const target = this.target;
 		if (target instanceof Creep) {
-			return _.sum(target.carry) <= target.carryCapacity - amount;
+			return target.store.getUsedCapacity() <= target.store.getCapacity() - amount;
 		} else if (isStoreStructure(target)) {
-			return _.sum(target.store) <= target.storeCapacity - amount;
+			return target.store.getUsedCapacity() <= target.storeCapacity - amount;
 		} else if (isEnergyStructure(target) && this.data.resourceType == RESOURCE_ENERGY) {
 			return target.energy <= target.energyCapacity - amount;
 		} else {

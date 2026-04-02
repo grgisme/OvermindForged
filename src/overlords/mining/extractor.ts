@@ -55,8 +55,8 @@ export class ExtractorOverlord extends Overlord {
 
 	private registerOutputRequests(): void {
 		if (this.container) {
-			if (_.sum(this.container.store) > 0.5 * this.container.storeCapacity ||
-				(_.sum(this.container.store) > 0 && this.drones.length == 0)) {
+			if (this.container.store.getUsedCapacity() > 0.5 * this.container.storeCapacity ||
+				(this.container.store.getUsedCapacity() > 0 && this.drones.length == 0)) {
 				this.colony.logisticsNetwork.requestOutput(this.container, {resourceType: 'all'});
 			}
 		}
@@ -107,7 +107,7 @@ export class ExtractorOverlord extends Overlord {
 	private handleDrone(drone: Zerg): void {
 		// Ensure you are in the assigned room
 		if (drone.room == this.room && !drone.pos.isEdge) {
-			if (_.sum(drone.carry) == 0) {
+			if (drone.store.getUsedCapacity() == 0) {
 				drone.task = Tasks.harvest(this.mineral!);
 			}
 			// Else see if there is an output to depsit to or to maintain

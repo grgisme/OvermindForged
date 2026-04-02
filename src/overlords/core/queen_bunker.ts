@@ -117,7 +117,7 @@ export class BunkerQueenOverlord extends Overlord {
 		let tasks: Task[] = [];
 		// Step 1: empty all contents (this shouldn't be necessary since queen is normally empty at this point)
 		let queenPos = queen.pos;
-		if (_.sum(queen.carry) > 0) {
+		if (queen.store.getUsedCapacity() > 0) {
 			const transferTarget = this.colony.terminal || this.colony.storage || this.batteries[0];
 			if (transferTarget) {
 				tasks.push(Tasks.transferAll(transferTarget));
@@ -142,7 +142,7 @@ export class BunkerQueenOverlord extends Overlord {
 		const supplyTasks: Task[] = [];
 		for (const request of supplyRequests) {
 			// stop when carry will be full
-			const remainingAmount = queen.carryCapacity - _.sum(queenCarry);
+			const remainingAmount = queen.store.getCapacity() - _.sum(queenCarry);
 			if (remainingAmount == 0) break;
 			// figure out how much you can withdraw
 			let amount = Math.min(request.amount, remainingAmount);
@@ -181,7 +181,7 @@ export class BunkerQueenOverlord extends Overlord {
 		const tasks: Task[] = [];
 		const transferTarget = this.colony.terminal || this.colony.storage || this.batteries[0];
 		// Step 1: empty all contents (this shouldn't be necessary since queen is normally empty at this point)
-		if (_.sum(queen.carry) > 0) {
+		if (queen.store.getUsedCapacity() > 0) {
 			if (transferTarget) {
 				tasks.push(Tasks.transferAll(transferTarget));
 			} else {
@@ -203,7 +203,7 @@ export class BunkerQueenOverlord extends Overlord {
 		}
 		for (const request of withdrawRequests) {
 			// stop when carry will be full
-			const remainingAmount = queen.carryCapacity - _.sum(queenCarry);
+			const remainingAmount = queen.store.getCapacity() - _.sum(queenCarry);
 			if (remainingAmount == 0) break;
 			// figure out how much you can withdraw
 			const amount = Math.min(request.amount, remainingAmount);
@@ -243,7 +243,7 @@ export class BunkerQueenOverlord extends Overlord {
 	// 	// // Refill any empty batteries
 	// 	// for (let battery of this.batteries) {
 	// 	// 	if (!battery.isFull) {
-	// 	// 		let amount = Math.min(battery.storeCapacity - _.sum(battery.store), queen.carryCapacity);
+	// 	// 		let amount = Math.min(battery.storeCapacity - battery.store.getUsedCapacity(), queen.store.getCapacity());
 	// 	// 		let target = this.colony.storage || this.colony.storage;
 	// 	// 		if (target) {
 	// 	// 			queen.task = Tasks.transfer(battery, RESOURCE_ENERGY, amount)

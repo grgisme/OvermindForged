@@ -129,8 +129,8 @@
 // 						   this.colony.hatchery ? this.colony.hatchery.pos : undefined;
 // 		let distance = dropoffPoint ? Pathing.distance(this.output.pos, dropoffPoint) : 0;
 // 		let predictedSurplus = this.energyPerTick * distance;
-// 		let outflux = _.sum(_.map(targetingTransporters, tporter => tporter.carryCapacity - _.sum(tporter.carry)));
-// 		return Math.min(_.sum(this.output.store) + predictedSurplus - outflux, 0);
+// 		let outflux = _.sum(_.map(targetingTransporters, tporter => tporter.store.getCapacity() - tporter.store.getUsedCapacity()));
+// 		return Math.min(this.output.store.getUsedCapacity() + predictedSurplus - outflux, 0);
 // 	}
 //
 // 	findOutputConstructionSite(): ConstructionSite | undefined {
@@ -148,7 +148,7 @@
 // 		if (this.output instanceof StructureContainer) {
 // 			let transportCapacity = 200 * this.colony.level;
 // 			let threshold = this.colony.stage > ColonyStage.Larva ? 0.8 : 0.5;
-// 			if (_.sum(this.output.store) > threshold * transportCapacity) {
+// 			if (this.output.store.getUsedCapacity() > threshold * transportCapacity) {
 // 				this.colony.logisticsNetwork.requestOutput(this.output, {
 // 					resourceType: 'all',
 // 					dAmountdt   : this.energyPerTick

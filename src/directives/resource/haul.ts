@@ -92,7 +92,7 @@ export class DirectiveHaul extends Directive {
 	 */
 	get totalResources(): number {
 		if (this.pos.isVisible) {
-			this.memory.totalResources = _.sum(this.store); // update total amount remaining
+			this.memory.totalResources = this.store.getUsedCapacity(); // update total amount remaining
 		} else {
 			if (this.memory.totalResources == undefined) {
 				return 1000; // pick some non-zero number so that haulers will spawn

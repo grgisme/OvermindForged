@@ -648,7 +648,7 @@ export class RoomPlanner {
 							log.info(`${this.colony.name}: waiting until storage is built to remove terminal`);
 							return;
 						} else if (this.colony.terminal &&
-								   _.sum(this.colony.terminal.store) - this.colony.terminal.energy > 1000) {
+								   this.colony.terminal.store.getUsedCapacity() - this.colony.terminal.energy > 1000) {
 							log.info(`${this.colony.name}: waiting on resources to evacuate before removing terminal`);
 							return;
 						} else if (this.colony.storage &&

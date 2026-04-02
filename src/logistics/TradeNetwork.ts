@@ -234,7 +234,7 @@ export class TraderJoe implements ITradeNetwork {
 			return;
 		}
 		amount = Math.max(amount, TERMINAL_MIN_SEND);
-		if (terminal.store[RESOURCE_ENERGY] < 10000 || terminal.storeCapacity - _.sum(terminal.store) < amount) {
+		if (terminal.store[RESOURCE_ENERGY] < 10000 || terminal.storeCapacity - terminal.store.getUsedCapacity() < amount) {
 			return;
 		}
 		let ordersForMineral = Game.market.getAllOrders({resourceType: resource, type: ORDER_SELL});

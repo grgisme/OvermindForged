@@ -107,7 +107,7 @@
 //
 // 	run(): void {
 // 		// Remove flag if you are a provider and out of resources
-// 		if (_.sum(this.store) == 0) {
+// 		if (this.store.getUsedCapacity() == 0) {
 // 			this.remove();
 // 		}
 // 	}

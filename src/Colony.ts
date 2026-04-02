@@ -534,7 +534,7 @@ export class Colony {
 		// if (this.name == 'E8S45') verbose = true; // 18863
 		// Include storage structures, lab contents, and manager carry
 		const stores = _.map(<StoreStructure[]>_.compact([this.storage, this.terminal]), s => s.store);
-		const creepCarriesToInclude = _.map(this.creeps, creep => creep.carry) as { [resourceType: string]: number }[];
+		const creepCarriesToInclude = _.map(this.creeps, creep => creep.store) as { [resourceType: string]: number }[];
 		const labContentsToInclude = _.map(_.filter(this.labs, lab => !!lab.mineralType), lab =>
 			({[<string>lab.mineralType]: lab.mineralAmount})) as { [resourceType: string]: number }[];
 		const allAssets: { [resourceType: string]: number } = mergeSum([

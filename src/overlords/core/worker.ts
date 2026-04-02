@@ -240,7 +240,7 @@ export class WorkerOverlord extends Overlord {
 
 	// Find a suitable repair ordering of roads with a depth first search
 	private buildPavingManifest(worker: Zerg, room: Room): Task | null {
-		let energy = worker.carry.energy;
+		let energy = worker.store.energy;
 		const targetRefs: { [ref: string]: boolean } = {};
 		const tasks: Task[] = [];
 		let target: StructureRoad | undefined;
@@ -333,7 +333,7 @@ export class WorkerOverlord extends Overlord {
 	}
 
 	private handleWorker(worker: Zerg) {
-		if (worker.carry.energy > 0) {
+		if (worker.store.energy > 0) {
 			// Upgrade controller if close to downgrade
 			if (this.colony.controller.ticksToDowngrade <= (this.colony.level >= 4 ? 10000 : 2000)) {
 				if (this.upgradeActions(worker)) return;

@@ -115,7 +115,7 @@
 // 		// Ensure you are in the assigned room
 // 		if (miner.room == this.room && !miner.pos.isEdge) {
 // 			// Harvest if out of energy
-// 			if (miner.carry.energy == 0) {
+// 			if (miner.store.energy == 0) {
 // 				miner.task = Tasks.harvest(this.miningSite.source);
 // 			}
 // 			// Else see if there is an output to depsit to or to maintain

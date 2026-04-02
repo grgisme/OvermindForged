@@ -148,7 +148,7 @@
 // 			}
 // 			// Withdraw energy from terminal if it has more than equilibrium amount and there is room for it in storage
 // 			if (this.terminal && this.terminal.energy > Energetics.settings.terminal.energy.equilibrium) {
-// 				if (_.sum(this.storage.store) < Energetics.settings.storage.total.cap) {
+// 				if (this.storage.store.getUsedCapacity() < Energetics.settings.storage.total.cap) {
 // 					withdrawStructures.push(this.terminal);
 // 				}
 // 			}

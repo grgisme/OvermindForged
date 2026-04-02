@@ -29,7 +29,7 @@ export class HaulingOverlord extends Overlord {
 	}
 
 	init() {
-		if (!this.colony.storage || _.sum(this.colony.storage.store) > Energetics.settings.storage.total.cap) {
+		if (!this.colony.storage || this.colony.storage.store.getUsedCapacity() > Energetics.settings.storage.total.cap) {
 			return;
 		}
 		// Spawn a number of haulers sufficient to move all resources within a lifetime, up to a max
@@ -38,7 +38,7 @@ export class HaulingOverlord extends Overlord {
 		const tripDistance = 2 * Pathing.distance((this.colony.storage || this.colony).pos, this.directive.pos);
 		const haulingPowerNeeded = Math.min(this.directive.totalResources,
 										  this.colony.storage.storeCapacity
-										  - _.sum(this.colony.storage.store)) * tripDistance;
+										  - this.colony.storage.store.getUsedCapacity()) * tripDistance;
 		// Calculate amount of hauling each hauler provides in a lifetime
 		const haulerCarryParts = Setups.transporters.early.getBodyPotential(CARRY, this.colony);
 		const haulingPowerPerLifetime = CREEP_LIFE_TIME * haulerCarryParts * CARRY_CAPACITY;
@@ -49,7 +49,7 @@ export class HaulingOverlord extends Overlord {
 	}
 
 	private handleHauler(hauler: Zerg) {
-		if (_.sum(hauler.carry) == 0) {
+		if (hauler.store.getUsedCapacity() == 0) {
 			// Travel to directive and collect resources
 			if (hauler.inSameRoomAs(this.directive)) {
 				// Pick up drops first
@@ -86,21 +86,21 @@ export class HaulingOverlord extends Overlord {
 			// Travel to colony room and deposit resources
 			if (hauler.inSameRoomAs(this.colony)) {
 				// Put energy in storage and minerals in terminal if there is one
-				for (const resourceType in hauler.carry) {
-					if (hauler.carry[<ResourceConstant>resourceType] == 0) continue;
+				for (const resourceType in hauler.store) {
+					if (hauler.store[<ResourceConstant>resourceType] == 0) continue;
 					if (resourceType == RESOURCE_ENERGY) { // prefer to put energy in storage
-						if (this.colony.storage && _.sum(this.colony.storage.store) < STORAGE_CAPACITY) {
+						if (this.colony.storage && this.colony.storage.store.getUsedCapacity() < STORAGE_CAPACITY) {
 							hauler.task = Tasks.transfer(this.colony.storage, resourceType);
 							return;
-						} else if (this.colony.terminal && _.sum(this.colony.terminal.store) < TERMINAL_CAPACITY) {
+						} else if (this.colony.terminal && this.colony.terminal.store.getUsedCapacity() < TERMINAL_CAPACITY) {
 							hauler.task = Tasks.transfer(this.colony.terminal, resourceType);
 							return;
 						}
 					} else { // prefer to put minerals in terminal
-						if (this.colony.terminal && _.sum(this.colony.terminal.store) < TERMINAL_CAPACITY) {
+						if (this.colony.terminal && this.colony.terminal.store.getUsedCapacity() < TERMINAL_CAPACITY) {
 							hauler.task = Tasks.transfer(this.colony.terminal, <ResourceConstant>resourceType);
 							return;
-						} else if (this.colony.storage && _.sum(this.colony.storage.store) < STORAGE_CAPACITY) {
+						} else if (this.colony.storage && this.colony.storage.store.getUsedCapacity() < STORAGE_CAPACITY) {
 							hauler.task = Tasks.transfer(this.colony.storage, <ResourceConstant>resourceType);
 							return;
 						}

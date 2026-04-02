@@ -25,13 +25,13 @@ Object.defineProperty(StructureContainer.prototype, 'energy', {
 
 Object.defineProperty(StructureContainer.prototype, 'isFull', { // if this container-like object is full
 	get() {
-		return _.sum(this.store) >= this.storeCapacity;
+		return this.store.getUsedCapacity() >= this.storeCapacity;
 	},
 	configurable: true,
 });
 Object.defineProperty(StructureContainer.prototype, 'isEmpty', { // if this container-like object is empty
 	get() {
-		return _.sum(this.store) == 0;
+		return this.store.getUsedCapacity() == 0;
 	},
 	configurable: true,
 });
@@ -129,14 +129,14 @@ Object.defineProperty(StructureStorage.prototype, 'energy', {
 
 Object.defineProperty(StructureStorage.prototype, 'isFull', { // if this container-like object is full
 	get() {
-		return _.sum(this.store) >= this.storeCapacity;
+		return this.store.getUsedCapacity() >= this.storeCapacity;
 	},
 	configurable: true,
 });
 
 Object.defineProperty(StructureStorage.prototype, 'isEmpty', { // if this container-like object is empty
 	get() {
-		return _.sum(this.store) == 0;
+		return this.store.getUsedCapacity() == 0;
 	},
 	configurable: true,
 });
@@ -153,14 +153,14 @@ Object.defineProperty(StructureTerminal.prototype, 'energy', {
 
 Object.defineProperty(StructureTerminal.prototype, 'isFull', { // if this container-like object is full
 	get() {
-		return _.sum(this.store) >= this.storeCapacity;
+		return this.store.getUsedCapacity() >= this.storeCapacity;
 	},
 	configurable: true,
 });
 
 Object.defineProperty(StructureTerminal.prototype, 'isEmpty', { // if this container-like object is empty
 	get() {
-		return _.sum(this.store) == 0;
+		return this.store.getUsedCapacity() == 0;
 	},
 	configurable: true,
 });

@@ -18,7 +18,7 @@ export class TaskFortify extends Task {
 	}
 
 	isValidTask() {
-		return (this.creep.carry.energy > 0); // Times out once creep is out of energy
+		return (this.creep.store.energy > 0); // Times out once creep is out of energy
 	}
 
 	isValidTarget() {

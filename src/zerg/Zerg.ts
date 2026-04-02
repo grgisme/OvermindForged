@@ -114,8 +114,8 @@ export class Zerg {
 		// Copy over creep references
 		this.creep = creep;
 		this.body = creep.body;
-		this.carry = creep.carry;
-		this.carryCapacity = creep.carryCapacity;
+		this.store = creep.store;
+		this.store.getCapacity() = creep.store.getCapacity();
 		this.fatigue = creep.fatigue;
 		this.hits = creep.hits;
 		this.hitsMax = creep.hitsMax;
@@ -154,8 +154,8 @@ export class Zerg {
 			this.pos = creep.pos;
 			this.nextPos = creep.pos;
 			this.body = creep.body;
-			this.carry = creep.carry;
-			this.carryCapacity = creep.carryCapacity;
+			this.store = creep.store;
+			this.store.getCapacity() = creep.store.getCapacity();
 			this.fatigue = creep.fatigue;
 			this.hits = creep.hits;
 			this.memory = creep.memory;
@@ -476,8 +476,8 @@ export class Zerg {
 	// Carry methods
 
 	get hasMineralsInCarry(): boolean {
-		for (const resourceType in this.carry) {
-			if (resourceType != RESOURCE_ENERGY && (this.carry[<ResourceConstant>resourceType] || 0) > 0) {
+		for (const resourceType in this.store) {
+			if (resourceType != RESOURCE_ENERGY && (this.store[<ResourceConstant>resourceType] || 0) > 0) {
 				return true;
 			}
 		}
@@ -671,7 +671,7 @@ export class Zerg {
 			const fleeing = Movement.flee(this, avoidGoals, fleeOptions.dropEnergy, moveOptions) != undefined;
 			if (fleeing) {
 				// Drop energy if needed
-				if (fleeOptions.dropEnergy && this.carry.energy > 0) {
+				if (fleeOptions.dropEnergy && this.store.energy > 0) {
 					const nearbyContainers = this.pos.findInRange(this.room.storageUnits, 1);
 					if (nearbyContainers.length > 0) {
 						this.transfer(_.first(nearbyContainers), RESOURCE_ENERGY);

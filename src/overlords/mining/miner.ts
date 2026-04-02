@@ -183,7 +183,7 @@ export class MiningOverlord extends Overlord {
 		if (this.container) {
 			const transportCapacity = 200 * this.colony.level;
 			const threshold = this.colony.stage > ColonyStage.Larva ? 0.8 : 0.5;
-			if (_.sum(this.container.store) > threshold * transportCapacity) {
+			if (this.container.store.getUsedCapacity() > threshold * transportCapacity) {
 				this.colony.logisticsNetwork.requestOutput(this.container, {
 					resourceType: 'all',
 					dAmountdt   : this.energyPerTick
@@ -216,10 +216,10 @@ export class MiningOverlord extends Overlord {
 		// Container mining
 		if (this.container) {
 			if (this.container.hits < this.container.hitsMax
-				&& miner.carry.energy >= Math.min(miner.carryCapacity, REPAIR_POWER * miner.getActiveBodyparts(WORK))) {
+				&& miner.store.energy >= Math.min(miner.store.getCapacity(), REPAIR_POWER * miner.getActiveBodyparts(WORK))) {
 				return miner.goRepair(this.container);
 			} else {
-				if (_.sum(miner.carry) < miner.carryCapacity) {
+				if (miner.store.getUsedCapacity() < miner.store.getCapacity()) {
 					return miner.goHarvest(this.source!);
 				} else {
 					return miner.goTransfer(this.container);
@@ -229,7 +229,7 @@ export class MiningOverlord extends Overlord {
 
 		// Build output site
 		if (this.constructionSite) {
-			if (miner.carry.energy >= Math.min(miner.carryCapacity, BUILD_POWER * miner.getActiveBodyparts(WORK))) {
+			if (miner.store.energy >= Math.min(miner.store.getCapacity(), BUILD_POWER * miner.getActiveBodyparts(WORK))) {
 				return miner.goBuild(this.constructionSite);
 			} else {
 				return miner.goHarvest(this.source!);
@@ -239,7 +239,7 @@ export class MiningOverlord extends Overlord {
 		// Drop mining
 		if (this.allowDropMining) {
 			miner.goHarvest(this.source!);
-			if (miner.carry.energy > 0.8 * miner.carryCapacity) { // try to drop on top of largest drop if full
+			if (miner.store.energy > 0.8 * miner.store.getCapacity()) { // try to drop on top of largest drop if full
 				const biggestDrop = maxBy(miner.pos.findInRange(miner.room.droppedEnergy, 1), drop => drop.amount);
 				if (biggestDrop) {
 					miner.goDrop(biggestDrop.pos, RESOURCE_ENERGY);
@@ -282,7 +282,7 @@ export class MiningOverlord extends Overlord {
 		// Link mining
 		if (this.link) {
 			miner.harvest(this.source!);
-			if (miner.carry.energy > 0.9 * miner.carryCapacity) {
+			if (miner.store.energy > 0.9 * miner.store.getCapacity()) {
 				miner.transfer(this.link, RESOURCE_ENERGY);
 			}
 			return;
@@ -302,7 +302,7 @@ export class MiningOverlord extends Overlord {
 		// Container mining
 		if (this.container) {
 			if (this.container.hits < this.container.hitsMax
-				&& miner.carry.energy >= Math.min(miner.carryCapacity, REPAIR_POWER * miner.getActiveBodyparts(WORK))) {
+				&& miner.store.energy >= Math.min(miner.store.getCapacity(), REPAIR_POWER * miner.getActiveBodyparts(WORK))) {
 				return miner.repair(this.container);
 			} else {
 				return miner.harvest(this.source!);
@@ -311,7 +311,7 @@ export class MiningOverlord extends Overlord {
 
 		// Build output site
 		if (this.constructionSite) {
-			if (miner.carry.energy >= Math.min(miner.carryCapacity, BUILD_POWER * miner.getActiveBodyparts(WORK))) {
+			if (miner.store.energy >= Math.min(miner.store.getCapacity(), BUILD_POWER * miner.getActiveBodyparts(WORK))) {
 				return miner.build(this.constructionSite);
 			} else {
 				return miner.harvest(this.source!);
@@ -321,13 +321,13 @@ export class MiningOverlord extends Overlord {
 		// Drop mining
 		if (this.allowDropMining) {
 			miner.harvest(this.source!);
-			if (miner.carry.energy > 0.8 * miner.carryCapacity) { // move over the drop when you're close to full
+			if (miner.store.energy > 0.8 * miner.store.getCapacity()) { // move over the drop when you're close to full
 				const biggestDrop = maxBy(miner.pos.findInRange(miner.room.droppedEnergy, 1), drop => drop.amount);
 				if (biggestDrop) {
 					miner.goTo(biggestDrop);
 				}
 			}
-			if (miner.carry.energy == miner.carryCapacity) { // drop when you are full
+			if (miner.store.energy == miner.store.getCapacity()) { // drop when you are full
 				miner.drop(RESOURCE_ENERGY);
 			}
 			return;

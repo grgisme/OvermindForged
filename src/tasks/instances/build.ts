@@ -16,7 +16,7 @@ export class TaskBuild extends Task {
 	}
 
 	isValidTask() {
-		return this.creep.carry.energy > 0;
+		return this.creep.store.energy > 0;
 	}
 
 	isValidTarget() {

@@ -61,7 +61,7 @@ export class PioneerOverlord extends Overlord {
 				}
 			}
 			// Build and recharge
-			if (pioneer.carry.energy == 0) {
+			if (pioneer.store.energy == 0) {
 				pioneer.task = Tasks.recharge();
 			} else if (this.room && this.room.controller &&
 					   (this.room.controller.ticksToDowngrade < 2500 || !this.spawnSite) &&

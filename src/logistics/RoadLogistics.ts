@@ -47,7 +47,7 @@ export class RoadLogistics {
 				return this.repairableRoads(room).length > 0;
 			} else {
 				// If worker is not already assigned, repair if critical roads or repaving energy >= carry capacity
-				return this.criticalRoads(room).length > 0 || this.energyToRepave(room) >= worker.carryCapacity;
+				return this.criticalRoads(room).length > 0 || this.energyToRepave(room) >= worker.store.getCapacity();
 			}
 		} else {
 			return false;
