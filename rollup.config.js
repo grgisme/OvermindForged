@@ -1,10 +1,10 @@
 "use strict";
 
-import resolve from "rollup-plugin-node-resolve";
-import commonjs from "rollup-plugin-commonjs";
-import progress from "rollup-plugin-progress";
-import typescript from "rollup-plugin-typescript2";
-import screeps from "rollup-plugin-screeps";
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import typescript from '@rollup/plugin-typescript';
+import clear from 'rollup-plugin-clear';
+import screeps from 'rollup-plugin-screeps';
 
 let cfg;
 const dest = process.env.DEST;
@@ -25,15 +25,9 @@ export default {
     input: "src/main.ts",
 
     plugins: [
-        progress({clearLine: true}),
-        resolve(),
-        commonjs({
-                     namedExports: {
-                         'src/Overmind_obfuscated': ['_Overmind'],
-                         'screeps-profiler': ['profiler'],
-                         'columnify': ['columnify']
-                     }
-                 }),
+        clear({ targets: ["dist"] }),
+        resolve({rootDir: "src"}),
+        commonjs(),
         typescript({tsconfig: "./tsconfig.json"}),
         screeps({config: cfg, dryRun: cfg == null})
     ],

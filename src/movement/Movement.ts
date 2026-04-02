@@ -247,7 +247,7 @@ export class Movement {
 		// delete path cache if destination is different
 		if (!destination.isEqualTo(state.destination)) {
 			if (options.movingTarget && state.destination.isNearTo(destination)) {
-				moveData.path += state.destination.getDirectionTo(destination);
+				if (moveData.path) moveData.path += state.destination.getDirectionTo(destination);
 				state.destination = destination;
 			} else {
 				delete moveData.path;

@@ -11,6 +11,7 @@ import {
 	isResource,
 	isStoreStructure,
 	isTombstone,
+	isRuin,
 	StoreStructure
 } from '../declarations/typeGuards';
 import {Mem} from '../memory/Memory';
@@ -26,6 +27,7 @@ export type LogisticsTarget =
 	| StructureNuker
 	| StructurePowerSpawn
 	| Tombstone
+	| Ruin
 	| Resource;
 
 export const ALL_RESOURCE_TYPE_ERROR =
@@ -168,7 +170,7 @@ export class LogisticsNetwork {
 			multiplier  : 1,
 			dAmountdt   : 0,
 		});
-		if (opts.resourceType == 'all' && (isStoreStructure(target) || isTombstone(target))) {
+		if (opts.resourceType == 'all' && (isStoreStructure(target) || isTombstone(target) || isRuin(target))) {
 			if (target.store.getUsedCapacity() == target.store.energy) {
 				opts.resourceType = RESOURCE_ENERGY; // convert "all" requests to energy if that's all they have
 			}
@@ -210,7 +212,7 @@ export class LogisticsNetwork {
 		// if (target instanceof DirectivePickup) {
 		// 	return target.storeCapacity - target.store.getUsedCapacity();
 		// } else
-		if (isResource(target) || isTombstone(target)) {
+		if (isResource(target) || isTombstone(target) || isRuin(target)) {
 			log.error(`Improper logistics request: should not request input for resource or tombstone!`);
 			return 0;
 		} else if (isStoreStructure(target)) {
@@ -248,7 +250,7 @@ export class LogisticsNetwork {
 
 	private getOutputAmount(target: LogisticsTarget, resourceType: ResourceConstant | 'all'): number {
 		if (resourceType == 'all') {
-			if (isTombstone(target) || isStoreStructure(target)) {
+			if (isTombstone(target) || isStoreStructure(target) || isRuin(target)) {
 				return target.store.getUsedCapacity();
 			} else {
 				log.error(ALL_RESOURCE_TYPE_ERROR);
@@ -257,7 +259,7 @@ export class LogisticsNetwork {
 		} else {
 			if (isResource(target)) {
 				return target.amount;
-			} else if (isTombstone(target)) {
+			} else if (isTombstone(target) || isRuin(target)) {
 				return target.store[resourceType] || 0;
 			} else if (isStoreStructure(target)) {
 				return target.store[resourceType] || 0;
@@ -356,14 +358,14 @@ export class LogisticsNetwork {
 			if (requestID) {
 				const request = this.requests[requestID];
 				if (request) {
-					const carry = transporter.store as { [resourceType: string]: number };
-					const remainingCapacity = transporter.store.getCapacity() - _.sum(carry);
+					const carry = transporter.store as unknown as { [resourceType: string]: number };
+					const remainingCapacity = transporter.store.getCapacity() - _.sum(carry as any);
 					const resourceAmount = -1 * this.predictedRequestAmount(transporter, request, nextAvailability);
 					// ^ need to multiply amount by -1 since transporter is doing complement of what request needs
 					if (request.resourceType == 'all') {
-						if (!isStoreStructure(request.target) && !isTombstone(request.target)) {
+						if (!isStoreStructure(request.target) && !isTombstone(request.target) && !isRuin(request.target)) {
 							log.error(ALL_RESOURCE_TYPE_ERROR);
-							return {energy: 0};
+							return {energy: 0} as any;
 						}
 						for (const resourceType in request.target.store) {
 							const resourceFraction = (request.target.store[<ResourceConstant>resourceType] || 0)
@@ -383,7 +385,7 @@ export class LogisticsNetwork {
 							carry[request.resourceType] = minMax(resourceAmount, 0, remainingCapacity);
 						}
 					}
-					return carry as StoreDefinition;
+					return carry as unknown as StoreDefinition;
 				}
 			}
 		}
@@ -465,7 +467,7 @@ export class LogisticsNetwork {
 			carry = this.predictedTransporterCarry(transporter);
 		} else {
 			// If you are targeting the requestor, use current carry for computations
-			carry = transporter.store;
+			carry = transporter.store as any;
 		}
 		if (amount > 0) { // requestInput instance, needs refilling
 			if (request.resourceType == 'all') {
@@ -482,7 +484,7 @@ export class LogisticsNetwork {
 							 dt       : dt_direct,
 							 targetRef: request.target.ref
 						 });
-			if ((carry[request.resourceType] || 0) > amount || _.sum(carry) == transporter.store.getCapacity()) {
+			if ((carry[request.resourceType] || 0) > amount || _.sum(carry as any) == transporter.store.getCapacity()) {
 				return choices; // Return early if you already have enough resources to go direct or are already full
 			}
 			// Change in resources if transporter picks up resources from a buffer first
@@ -498,7 +500,7 @@ export class LogisticsNetwork {
 			}
 		} else if (amount < 0) { // requestOutput instance, needs pickup
 			// Change in resources if transporter goes straight to the output
-			const remainingCarryCapacity = transporter.store.getCapacity() - _.sum(carry);
+			const remainingCarryCapacity = transporter.store.getCapacity() - _.sum(carry as any);
 			const dQ_direct = Math.min(Math.abs(amount), remainingCarryCapacity);
 			const dt_direct = newPos.getMultiRoomRangeTo(request.target.pos)
 							* LogisticsNetwork.settings.rangeToPathHeuristic + ticksUntilFree;
@@ -619,7 +621,7 @@ export class LogisticsNetwork {
 			let targetType: string;
 			if (request.target instanceof Resource) {
 				targetType = 'resource';
-			} else if (request.target instanceof Tombstone) {
+			} else if (request.target instanceof Tombstone || isRuin(request.target)) {
 				targetType = 'tombstone';
 			} else {
 				targetType = request.target.structureType;
@@ -629,13 +631,13 @@ export class LogisticsNetwork {
 				amount = request.target.amount;
 			} else {
 				if (request.resourceType == 'all') {
-					if (isTombstone(request.target) || isStoreStructure(request.target)) {
+					if (isTombstone(request.target) || isStoreStructure(request.target) || isRuin(request.target)) {
 						amount = request.target.store.getUsedCapacity();
 					} else if (isEnergyStructure(request.target)) {
 						amount = -0.001;
 					}
 				} else {
-					if (isTombstone(request.target) || isStoreStructure(request.target)) {
+					if (isTombstone(request.target) || isStoreStructure(request.target) || isRuin(request.target)) {
 						amount = request.target.store[request.resourceType] || 0;
 					} else if (isEnergyStructure(request.target)) {
 						amount = request.target.energy;

@@ -180,7 +180,7 @@ export class Hatchery extends HiveCluster {
 				this.colony.logisticsNetwork.requestInput(this.battery, {multiplier: 1.5});
 			}
 			// get rid of any minerals in the container if present
-			if (hasMinerals(this.battery.store)) {
+			if (hasMinerals(this.battery.store as any)) {
 				this.colony.logisticsNetwork.requestOutputMinerals(this.battery);
 			}
 		}

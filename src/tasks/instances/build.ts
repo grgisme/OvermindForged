@@ -6,8 +6,10 @@ export const buildTaskName = 'build';
 
 @profile
 export class TaskBuild extends Task {
-	target: buildTargetType;
 
+	// @ts-ignore
+
+	declare target: buildTargetType;
 	constructor(target: buildTargetType, options = {} as TaskOptions) {
 		super(buildTaskName, target, options);
 		// Settings

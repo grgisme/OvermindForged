@@ -6,8 +6,10 @@ export const healTaskName = 'heal';
 
 @profile
 export class TaskHeal extends Task {
-	target: healTargetType;
 
+	// @ts-ignore
+
+	declare target: healTargetType;
 	constructor(target: healTargetType, options = {} as TaskOptions) {
 		super(healTaskName, target, options);
 		// Settings

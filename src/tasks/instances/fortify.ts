@@ -7,8 +7,10 @@ export const fortifyTaskName = 'fortify';
 
 @profile
 export class TaskFortify extends Task {
-	target: fortifyTargetType;
 
+	// @ts-ignore
+
+	declare target: fortifyTargetType;
 	constructor(target: fortifyTargetType, options = {} as TaskOptions) {
 		super(fortifyTaskName, target, options);
 		// Settings

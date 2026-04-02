@@ -10,8 +10,10 @@ export const attackTaskName = 'attack';
 
 @profile
 export class TaskAttack extends Task {
-	target: attackTargetType;
 
+	// @ts-ignore
+
+	declare target: attackTargetType;
 	constructor(target: attackTargetType, options = {} as TaskOptions) {
 		super(attackTaskName, target, options);
 		// Settings

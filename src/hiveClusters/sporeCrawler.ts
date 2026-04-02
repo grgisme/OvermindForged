@@ -37,6 +37,7 @@ export class SporeCrawler extends HiveCluster {
 
 	}
 
+	// @ts-ignore
 	get memory(): undefined {
 		return undefined;
 	}

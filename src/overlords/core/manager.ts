@@ -192,7 +192,7 @@ export class CommandCenterOverlord extends Overlord {
 	private moveMineralsToTerminal(manager: Zerg): boolean {
 		const storage = this.commandCenter.storage;
 		const terminal = this.commandCenter.terminal;
-		if (!storage || !terminal) {
+		if (!storage || !terminal || terminal.store.getFreeCapacity() < 10000) {
 			return false;
 		}
 		// Move all non-energy resources from storage to terminal
@@ -221,6 +221,12 @@ export class CommandCenterOverlord extends Overlord {
 		const tombstones = manager.pos.lookFor(LOOK_TOMBSTONES);
 		if (tombstones.length > 0) {
 			manager.task = Tasks.transferAll(this.depositTarget).fork(Tasks.withdrawAll(tombstones[0]));
+			return true;
+		}
+		// Look for ruins at position
+		const ruins = manager.pos.lookFor(LOOK_RUINS);
+		if (ruins.length > 0) {
+			manager.task = Tasks.transferAll(this.depositTarget).fork(Tasks.withdrawAll(ruins[0]));
 			return true;
 		}
 		return false;
@@ -255,7 +261,7 @@ export class CommandCenterOverlord extends Overlord {
 		// Pick up any dropped resources on ground
 		if (this.pickupActions(manager)) return;
 		// Move minerals from storage to terminal if needed
-		if (hasMinerals(this.commandCenter.storage.store)) {
+		if (hasMinerals(this.commandCenter.storage.store as any)) {
 			if (this.moveMineralsToTerminal(manager)) return;
 		}
 		// Fill up storage before you destroy terminal if rebuilding room

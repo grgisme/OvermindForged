@@ -7,8 +7,10 @@ export const upgradeTaskName = 'upgrade';
 
 @profile
 export class TaskUpgrade extends Task {
-	target: upgradeTargetType;
 
+	// @ts-ignore
+
+	declare target: upgradeTargetType;
 	constructor(target: upgradeTargetType, options = {} as TaskOptions) {
 		super(upgradeTaskName, target, options);
 		// Settings

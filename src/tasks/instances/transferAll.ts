@@ -9,7 +9,9 @@ export const transferAllTaskName = 'transferAll';
 @profile
 export class TaskTransferAll extends Task {
 
-	target: transferAllTargetType;
+	// @ts-ignore
+
+	declare target: transferAllTargetType;
 	data: {
 		skipEnergy?: boolean;
 	};

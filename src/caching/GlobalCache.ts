@@ -81,7 +81,7 @@ export class $ { // $ = cash = cache... get it? :D
 	static set<T extends HasRef, K extends keyof T>(thing: T, key: K,
 													callback: () => (T[K] & (undefined | HasID | HasID[])),
 													timeout = CACHE_TIMEOUT): void {
-		const cacheKey = thing.ref + '$' + key;
+		const cacheKey = thing.ref + '$' + String(key);
 		if (!_cache.things[cacheKey] || Game.time > _cache.expiration[cacheKey]) {
 			// Recache if new entry or entry is expired
 			_cache.things[cacheKey] = callback();
@@ -105,9 +105,9 @@ export class $ { // $ = cash = cache... get it? :D
 		_.forEach(keys, function(key) {
 			if (thing[key]) {
 				if (_.isArray(thing[key])) {
-					thing[key] = _.compact(_.map(thing[key] as HasID[], s => Game.getObjectById(s.id))) as T[K];
+					thing[key] = _.compact(_.map(thing[key] as HasID[], s => Game.getObjectById(s.id))) as unknown as T[K];
 				} else {
-					thing[key] = Game.getObjectById((<HasID>thing[key]).id) as T[K];
+					thing[key] = Game.getObjectById((<HasID>thing[key]).id) as unknown as T[K];
 				}
 			}
 		});
@@ -120,9 +120,9 @@ export class $ { // $ = cash = cache... get it? :D
 				for (const prop in thing[key]) {
 					if (_.isArray(thing[key][prop])) {
 						thing[key][prop] = _.compact(_.map(thing[key][prop] as HasID[],
-														   s => Game.getObjectById(s.id))) as HasID[];
+														   s => Game.getObjectById(s.id))) as unknown as T[K][Extract<keyof T[K], string>];
 					} else {
-						thing[key][prop] = Game.getObjectById((<HasID>thing[key][prop]).id) as undefined | HasID;
+						thing[key][prop] = Game.getObjectById((<HasID>thing[key][prop]).id) as unknown as T[K][Extract<keyof T[K], string>];
 					}
 				}
 			}

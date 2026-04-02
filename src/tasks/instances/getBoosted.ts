@@ -11,8 +11,9 @@ export const MIN_LIFETIME_FOR_BOOST = 0.85;
 @profile
 export class TaskGetBoosted extends Task {
 
-	target: getBoostedTargetType;
+	// @ts-ignore
 
+	declare target: getBoostedTargetType;
 	data: {
 		resourceType: _ResourceConstantSansEnergy;
 		amount: number | undefined;

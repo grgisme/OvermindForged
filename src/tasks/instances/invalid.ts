@@ -14,8 +14,10 @@ const invalidTarget = {
 
 @profile
 export class TaskInvalid extends Task {
-	target: any;
 
+	// @ts-ignore
+
+	declare target: any;
 	constructor() {
 		super('INVALID', invalidTarget);
 

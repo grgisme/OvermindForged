@@ -66,7 +66,7 @@ export class DirectiveHaul extends Directive {
 			let store: { [resourceType: string]: number } = {};
 			if (this.storeStructure) {
 				if (isStoreStructure(this.storeStructure)) {
-					store = this.storeStructure.store;
+					store = this.storeStructure.store as any;
 				} else {
 					store = {energy: this.storeStructure.energy};
 				}
@@ -82,7 +82,7 @@ export class DirectiveHaul extends Directive {
 					store[resourceType] = totalResourceAmount;
 				}
 			}
-			this._store = store as StoreDefinition;
+			this._store = store as unknown as StoreDefinition;
 		}
 		return this._store;
 	}

@@ -8,7 +8,10 @@ export const dropTaskName = 'drop';
 export class TaskDrop extends Task {
 
 	static taskName = 'drop';
-	target: null;
+
+	// @ts-ignore
+
+	declare target: null;
 	data: {
 		resourceType: ResourceConstant
 		amount: number | undefined

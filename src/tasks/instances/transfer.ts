@@ -16,7 +16,9 @@ export const transferTaskName = 'transfer';
 @profile
 export class TaskTransfer extends Task {
 
-	target: transferTargetType;
+	// @ts-ignore
+
+	declare target: transferTargetType;
 	data: {
 		resourceType: ResourceConstant
 		amount: number | undefined

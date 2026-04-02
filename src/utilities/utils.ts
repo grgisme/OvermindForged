@@ -41,7 +41,7 @@ export function getUsername(): string {
 	for (const i in Game.rooms) {
 		const room = Game.rooms[i];
 		if (room.controller && room.controller.my) {
-			return room.controller.owner.username;
+			return room.controller!.owner!.username;
 		}
 	}
 	for (const i in Game.creeps) {

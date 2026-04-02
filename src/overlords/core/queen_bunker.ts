@@ -103,7 +103,7 @@ export class BunkerQueenOverlord extends Overlord {
 
 	init() {
 		for (const battery of this.batteries) {
-			if (hasMinerals(battery.store)) { // get rid of any minerals in the container if present
+			if (hasMinerals(battery.store as any)) { // get rid of any minerals in the container if present
 				this.colony.logisticsNetwork.requestOutputMinerals(battery);
 			}
 		}
@@ -129,7 +129,7 @@ export class BunkerQueenOverlord extends Overlord {
 		}
 		// Step 2: figure out what you need to supply for and calculate the needed resources
 		const queenCarry = {} as { [resourceType: string]: number };
-		const allStore = mergeSum(_.map(this.storeStructures, s => s.store));
+		const allStore = mergeSum(_.map(this.storeStructures, s => s.store as any));
 
 		const supplyRequests: TransportRequest[] = [];
 		for (const priority in this.colony.transportRequests.supply) {

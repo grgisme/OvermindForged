@@ -97,7 +97,7 @@ interface CreepMemory {
 
 interface MoveData {
 	state: any[];
-	path: string;
+	path?: string;
 	roomVisibility: { [roomName: string]: boolean };
 	delay?: number;
 	fleeWait?: number;

@@ -1,7 +1,7 @@
 import {Colony} from '../../Colony';
 import {log} from '../../console/log';
 import {Roles, Setups} from '../../creepSetups/setups';
-import {isResource, isStoreStructure, isTombstone} from '../../declarations/typeGuards';
+import {isResource, isStoreStructure, isTombstone, isRuin} from '../../declarations/typeGuards';
 import {ALL_RESOURCE_TYPE_ERROR, BufferTarget, LogisticsRequest} from '../../logistics/LogisticsNetwork';
 import {Pathing} from '../../movement/Pathing';
 import {OverlordPriority} from '../../priorities/priorities_overlords';
@@ -86,8 +86,8 @@ export class TransportOverlord extends Overlord {
 			const amount = this.colony.logisticsNetwork.predictedRequestAmount(transporter, request);
 			// Target is requesting input
 			if (amount > 0) {
-				if (isResource(request.target) || isTombstone(request.target)) {
-					log.warning(`Improper logistics request: should not request input for resource or tombstone!`);
+				if (isResource(request.target) || isTombstone(request.target) || isRuin(request.target)) {
+					log.warning(`Improper logistics request: should not request input for resource or tombstone or ruin!`);
 					return;
 				} else if (request.resourceType == 'all') {
 					log.error(`${this.print}: cannot request 'all' as input!`);

@@ -166,6 +166,15 @@ export class Overseer implements IOverseer {
 				colony.logisticsNetwork.requestOutput(tombstone, {resourceType: 'all'});
 			}
 		}
+		// Place logistics request directives for ruins
+		for (const ruin of colony.ruins) {
+			const store = ruin.store as any;
+			if (store.getUsedCapacity() > LogisticsNetwork.settings.droppedEnergyThreshold
+				|| store.getUsedCapacity() > store.energy) {
+				if (colony.bunker && ruin.pos.isEqualTo(colony.bunker.anchor)) continue;
+				colony.logisticsNetwork.requestOutput(ruin, {resourceType: 'all'});
+			}
+		}
 	}
 
 	private handleBootstrapping(colony: Colony) {

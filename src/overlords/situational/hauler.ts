@@ -65,7 +65,7 @@ export class HaulingOverlord extends Overlord {
 				if (this.directive.storeStructure) {
 					let store: { [resourceType: string]: number } = {};
 					if (isStoreStructure(this.directive.storeStructure)) {
-						store = this.directive.storeStructure.store;
+						store = this.directive.storeStructure.store as any;
 					} else {
 						store = {energy: this.directive.storeStructure.energy};
 					}

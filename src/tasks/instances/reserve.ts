@@ -7,8 +7,10 @@ export const reserveTaskName = 'colony';
 
 @profile
 export class TaskReserve extends Task {
-	target: reserveTargetType;
 
+	// @ts-ignore
+
+	declare target: reserveTargetType;
 	constructor(target: reserveTargetType, options = {} as TaskOptions) {
 		super(reserveTaskName, target, options);
 	}

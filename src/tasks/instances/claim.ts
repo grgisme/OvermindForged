@@ -6,8 +6,10 @@ export const claimTaskName = 'claim';
 
 @profile
 export class TaskClaim extends Task {
-	target: claimTargetType;
 
+	// @ts-ignore
+
+	declare target: claimTargetType;
 	constructor(target: claimTargetType, options = {} as TaskOptions) {
 		super(claimTaskName, target, options);
 		// Settings

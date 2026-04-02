@@ -6,8 +6,10 @@ export const getRenewedTaskName = 'getRenewed';
 
 @profile
 export class TaskGetRenewed extends Task {
-	target: getRenewedTargetType;
 
+	// @ts-ignore
+
+	declare target: getRenewedTargetType;
 	constructor(target: getRenewedTargetType, options = {} as TaskOptions) {
 		super(getRenewedTaskName, target, options);
 	}

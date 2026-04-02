@@ -4,15 +4,16 @@ import {StoreStructure} from '../../declarations/typeGuards';
 import {profile} from '../../profiler/decorator';
 import {Task} from '../Task';
 
-export type withdrawAllTargetType = StoreStructure | Tombstone;
+export type withdrawAllTargetType = StoreStructure | Tombstone | Ruin;
 
 export const withdrawAllTaskName = 'withdrawAll';
 
 @profile
 export class TaskWithdrawAll extends Task {
 
-	target: withdrawAllTargetType;
+	// @ts-ignore
 
+	declare target: withdrawAllTargetType;
 	constructor(target: withdrawAllTargetType, options = {} as TaskOptions) {
 		super(withdrawAllTaskName, target, options);
 	}

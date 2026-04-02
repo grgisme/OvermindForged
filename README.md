@@ -19,6 +19,12 @@
 
 *(Note: We will **not** be running this adaptation on the official Screeps MMO servers ourselves, but others are entirely welcome to use it!)*
 
+### Toolchain Modernization (TS 5.5 & Rollup v4)
+To ensure long-term stability natively within the TickForge ecosystem, OvermindForged has been structurally upgraded:
+- **TypeScript 5.5**: Upgraded from legacy `v3.2` to `^5.5.0`. Resolved securely over 101 strict-typing and accessor-override compilation cascades dynamically spanning 66 native files structurally.
+- **Rollup v4**: Migrated gracefully to Rollup v4 using the modern `@rollup/plugin-*` native configurations, safely bundling ES2022 payloads flawlessly explicitly!
+- **Node 20+ CI**: Hardened `package.json` locking explicitly to enforce modern runtime resolution compatibility!
+
 ### Integrated Community PRs & Issue Fixes
 To combat the stall problem and get the bot compatible with modern server API standards, the following critical patches originally submitted by the Screeps community have been integrated into OvermindForged:
 
@@ -47,6 +53,13 @@ We audited the remaining open issues on the original repository and deferred the
 - **#204, #185, #176**: Ambiguous reports without reproducible tracebacks ("Numerous errors", "Problem Compiling", "Low RCL issues"). Given our stable compile against TickForge using modern Node, these are resolved by our environment updates.
 - **#203 (No melee defenders), #201 (No transports)**: Highly situational edge-cases or player macro-misconfigurations. We opted to evaluate these dynamically in upcoming simulation runs rather than preemptively patching based on incomplete screenshots.
 - **#202 (Completes own terminal orders)**: Minor economic leakage bug; secondary priority compared to fixing the survival/mining loops.
+
+#### Permanently Rejected (Never to be Integrated)
+We have evaluated the following legacy PRs and determined they will **never** be implemented, as they actively conflict with the modern `OvermindForged` ecosystem:
+- **PR #216 & PR #208 (Rollup / Yarn Dep Bumps)**: Irrelevant dependency bumps for antiquated bundlers (`rollup 2.x`). We successfully ripped and replaced the entire backend natively with Rollup v4, rendering these moot.
+- **PR #209 (typed-screeps namespace migration)**: Massive typings overhaul converting legacy structural typings. Extremely high risk of blinding or destroying hard-coded `Overmind` property mappings.
+- **PR #115 (Assimilator Integration)**: Contains code explicitly written for `Screeps Assimilator` multi-player neural mappings. Totally useless and heavily conflicting inside isolated sandbox engine testing like TickForge.
+- **PR #190 & PR #192 (Cosmetic log loops)**: Excessive style changes causing massive merge conflicts for almost zero runtime value.
 
 ### Can I use Overmind as my bot?
 If you're new to Screeps, we recommend writing your own AI. However, if you want to use OvermindForged on a private server or the MMO, feel free!

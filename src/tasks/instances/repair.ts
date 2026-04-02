@@ -6,8 +6,10 @@ export const repairTaskName = 'repair';
 
 @profile
 export class TaskRepair extends Task {
-	target: repairTargetType;
 
+	// @ts-ignore
+
+	declare target: repairTargetType;
 	constructor(target: repairTargetType, options = {} as TaskOptions) {
 		super(repairTaskName, target, options);
 		// Settings

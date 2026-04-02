@@ -7,7 +7,7 @@ import {Overlord} from '../overlords/Overlord';
 import {profile} from '../profiler/decorator';
 import {initializeTask} from '../tasks/initializer';
 import {Task} from '../tasks/Task';
-import {NEW_OVERMIND_INTERVAL} from '../~settings';
+import {NEW_OVERMIND_INTERVAL, USE_TRY_CATCH} from '../~settings';
 
 export function getOverlord(creep: Zerg | Creep): Overlord | null {
 	if (creep.memory[_MEM.OVERLORD]) {
@@ -426,7 +426,7 @@ export class Zerg {
 		}
 	}
 
-	withdraw(target: Structure | Tombstone, resourceType: ResourceConstant = RESOURCE_ENERGY, amount?: number) {
+	withdraw(target: Structure | Tombstone | Ruin, resourceType: ResourceConstant = RESOURCE_ENERGY, amount?: number) {
 		const result = this.creep.withdraw(target, resourceType, amount);
 		if (!this.actionLog.withdraw) this.actionLog.withdraw = (result == OK);
 		return result;
@@ -581,7 +581,19 @@ export class Zerg {
 	 */
 	run(): number | undefined {
 		if (this.task) {
-			return this.task.run();
+			if (USE_TRY_CATCH) {
+				try {
+					return this.task.run();
+				} catch (e) {
+					if (e instanceof Error) {
+						e.name = `Caught unhandled exception in task ${this.task.name} for ${this.name}: \n` + e.name + '\n' + e.stack;
+						Overmind.exceptions.push(e);
+					}
+					return undefined;
+				}
+			} else {
+				return this.task.run();
+			}
 		}
 	}
 

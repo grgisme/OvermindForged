@@ -120,7 +120,7 @@ export class UpgradeSite extends HiveCluster {
 				const energyPerTick = UPGRADE_CONTROLLER_POWER * this.upgradePowerNeeded;
 				this.colony.logisticsNetwork.requestInput(this.battery, {dAmountdt: energyPerTick});
 			}
-			if (hasMinerals(this.battery.store)) { // get rid of any minerals in the container if present
+			if (hasMinerals(this.battery.store as any)) { // get rid of any minerals in the container if present
 				this.colony.logisticsNetwork.requestOutputMinerals(this.battery);
 			}
 		}

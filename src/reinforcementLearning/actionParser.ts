@@ -42,7 +42,7 @@ export class ActionParser {
 
 		const command: string = action[0];
 		const predicate: any = action[1];
-		const targ: RoomObject | null = typeof predicate == 'string' ? Game.getObjectById(predicate) : null;
+		const targ = (typeof predicate == 'string' ? Game.getObjectById(predicate) : null) as RoomObject | null;
 
 		switch (command) {
 			case 'move':
