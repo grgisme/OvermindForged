@@ -13,6 +13,10 @@ import {minBy} from '../../utilities/utils';
 import {Zerg} from '../../zerg/Zerg';
 import {Overlord, ZergOptions} from '../Overlord';
 
+interface hitsCallback {
+	(structure: StructureWall | StructureRampart): number;
+}
+
 /**
  * Spawns general-purpose workers, which maintain a colony, performing actions such as building, repairing, fortifying,
  * paving, and upgrading, when needed
@@ -29,6 +33,8 @@ export class WorkerOverlord extends Overlord {
 	constructionSites: ConstructionSite[];
 	nukeDefenseRamparts: StructureRampart[];
 	nukeDefenseHitsRemaining: { [id: string]: number };
+	nukeDefenseHitsNeeded: { [id: string]: number };
+	useBoostedRepair?: boolean;
 
 	static settings = {
 		barrierHits         : {			// What HP to fortify barriers to at each RCL
@@ -105,6 +111,7 @@ export class WorkerOverlord extends Overlord {
 		// Nuke defense ramparts needing fortification
 		this.nukeDefenseRamparts = [];
 		this.nukeDefenseHitsRemaining = {};
+		this.nukeDefenseHitsNeeded = {};
 		if (this.room.find(FIND_NUKES).length > 0) {
 			for (const rampart of this.colony.room.ramparts) {
 				const neededHits = this.neededRampartHits(rampart);
@@ -127,16 +134,26 @@ export class WorkerOverlord extends Overlord {
 		this.workers = this.zerg(Roles.worker, opts);
 	}
 
-	private neededRampartHits(rampart: StructureRampart): number {
-		let neededHits = WorkerOverlord.settings.barrierHits[this.colony.level];
+	private neededNukeHits(rampart: StructureWall|StructureRampart): number {
+		if (this.nukeDefenseHitsNeeded[rampart.id] !== undefined) {
+			return this.nukeDefenseHitsNeeded[rampart.id]
+		}
+		let neededHits = 0;
 		for (const nuke of rampart.pos.lookFor(LOOK_NUKES)) {
 			neededHits += 10e6;
 		}
-		for (const nuke of rampart.pos.findInRange(FIND_NUKES, 3)) {
+		for (const nuke of rampart.pos.findInRange(FIND_NUKES, 2)) {
 			if (nuke.pos != rampart.pos) {
 				neededHits += 5e6;
 			}
 		}
+		this.nukeDefenseHitsNeeded[rampart.id] = neededHits;
+		return neededHits;
+	}
+	
+	private neededRampartHits(rampart: StructureRampart): number {
+		let neededHits = WorkerOverlord.settings.barrierHits[this.colony.level];
+		neededHits += this.neededNukeHits(rampart);
 		return neededHits;
 	}
 
@@ -280,19 +297,28 @@ export class WorkerOverlord extends Overlord {
 		}
 	}
 
-	private fortifyActions(worker: Zerg, fortifyStructures = this.fortifyBarriers): boolean {
+	private lowBarriers(fortifyStructures = this.fortifyBarriers,
+							hitsCallback: hitsCallback
+								= function(structure: StructureWall|StructureRampart): number {return structure.hits;}
+			): (StructureWall | StructureRampart)[]
+		{
 		let lowBarriers: (StructureWall | StructureRampart)[];
-		const highestBarrierHits = _.max(_.map(fortifyStructures, structure => structure.hits));
+		const highestBarrierHits = _.max(_.map(fortifyStructures, structure => hitsCallback(structure)));
 		if (highestBarrierHits > WorkerOverlord.settings.hitTolerance) {
 			// At high barrier HP, fortify only structures that are within a threshold of the lowest
-			const lowestBarrierHits = _.min(_.map(fortifyStructures, structure => structure.hits));
-			lowBarriers = _.filter(fortifyStructures, structure => structure.hits <= lowestBarrierHits +
+			const lowestBarrierHits = _.min(_.map(fortifyStructures, structure => hitsCallback(structure)));
+			lowBarriers = _.filter(fortifyStructures, structure => hitsCallback(structure) <= lowestBarrierHits +
 																   WorkerOverlord.settings.hitTolerance);
 		} else {
 			// Otherwise fortify the lowest N structures
 			const numBarriersToConsider = 5; // Choose the closest barrier of the N barriers with lowest hits
 			lowBarriers = _.take(fortifyStructures, numBarriersToConsider);
 		}
+		return lowBarriers
+	}
+
+	private fortifyActions(worker: Zerg, fortifyStructures = this.fortifyBarriers): boolean {
+		const lowBarriers = this.lowBarriers(fortifyStructures);
 		const target = worker.pos.findClosestByMultiRoomRange(lowBarriers);
 		if (target) {
 			worker.task = Tasks.fortify(target);
@@ -303,7 +329,17 @@ export class WorkerOverlord extends Overlord {
 	}
 
 	private nukeFortifyActions(worker: Zerg, fortifyStructures = this.nukeDefenseRamparts): boolean {
-		const target = minBy(fortifyStructures, rampart => {
+		var self = this;
+		const adaptedHits = _.reduce(fortifyStructures, function(obj,structure: StructureWall|StructureRampart) {
+			obj[structure.id] = structure.hits - self.neededNukeHits(structure);
+			return obj;
+		}, {} as {[key: string]: number});
+		
+		const lowBarriers = this.lowBarriers()
+		const minBarrier = lowBarriers[lowBarriers.length - 1].hits
+		const urgent = _.filter(fortifyStructures, structure => adaptedHits[structure.id] < minBarrier)
+
+		const target = minBy(urgent, rampart => {
 			const structuresUnderRampart = rampart.pos.lookFor(LOOK_STRUCTURES);
 			return _.min(_.map(structuresUnderRampart, structure => {
 				const priority = _.findIndex(FortifyPriorities, sType => sType == structure.structureType);
@@ -314,11 +350,12 @@ export class WorkerOverlord extends Overlord {
 				}
 			}));
 		});
+		
 		if (target) {
 			worker.task = Tasks.fortify(target);
 			return true;
 		} else {
-			return false;
+			return this.fortifyActions(worker, fortifyStructures);
 		}
 	}
 

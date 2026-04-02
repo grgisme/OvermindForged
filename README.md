@@ -26,6 +26,10 @@ To combat the stall problem and get the bot compatible with modern server API st
 - **PR #191 (Refactor deprecated isRoomAvailable)** *by @Mirzian*: Updates scouting logic to accommodate the removal of `Game.map.isRoomAvailable`, natively using the new `getRoomStatus` mappings.
 - **PR #183 (Fix vacatePos movement bug)** *by @bittflo (Florian)*: Fixes a critical movement evaluation bug where any Zerg instances failed to respect the forced `vacatePos` override, causing cascading blockages.
 - **PR #177 (cherry pick: 0 = false, check for key exists)** *by @ikiris (Blake Dunlap)*: Fixes a nasty JS truthy bug evaluated as `0 = false` that prevents managers from shifting efficiently.
+- **PR #194 (Fix inverted colon logic for global cache metrics)** *by @gswagner*: Fixes the key recall string for `GlobalCache` and `costMatrix`.
+- **PR #189 (Fix invadercore attack bug causing paralyzation)** *by @bittflo*: Logic fix preventing invaderCores from stalling `npcDefense` execution and paralyzing spawns.
+- **PR #178 (Nuke response prioritization)** *by @ikiris (Blake Dunlap)*: Refactors worker fortification evaluations and avoids leapfrogging `neededRampartHits`.
+- **PR #145 (Novice protection)** *by @mroy*: Adds League of Automated Nations querying to Cartographer bounding segment properties.
 - *(More legacy PR tracking and mechanic upgrades coming soon!)*
 
 ### Can I use Overmind as my bot?

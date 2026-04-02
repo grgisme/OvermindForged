@@ -77,6 +77,7 @@ interface Room {
 	observer: StructureObserver | undefined;
 	powerSpawn: StructurePowerSpawn | undefined;
 	extractor: StructureExtractor | undefined;
+	invaderCore: StructureInvaderCore | undefined;
 	nuker: StructureNuker | undefined;
 	repairables: Structure[];
 	rechargeables: rechargeObjectType[];

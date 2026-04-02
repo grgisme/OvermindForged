@@ -8,6 +8,9 @@ import {getCacheExpiration, irregularExponentialMovingAverage} from '../utilitie
 import {Zerg} from '../zerg/Zerg';
 import {MY_USERNAME} from '../~settings';
 
+import {Segmenter} from '../memory/Segmenter';
+import {log} from '../console/log';
+
 const RECACHE_TIME = 2500;
 const OWNED_RECACHE_TIME = 1000;
 const ROOM_CREEP_HISTORY_TICKS = 25;
@@ -352,8 +355,24 @@ export class RoomIntel {
 	}
 
 
+	static requestZoneData() {
+		const checkOnTick = 123;
+		if (Game.time % 1000 == checkOnTick - 2) {
+			Segmenter.requestForeignSegment('LeagueOfAutomatedNations', 96);
+		} else if (Game.time % 1000 == checkOnTick - 1 ) {
+			const loanData = Segmenter.getForeignSegment();
+			if (loanData) {
+				Memory.zoneRooms = loanData as any;
+			} else {
+				log.error('Empty LOAN data');
+			}
+		}
+	}
+
 	static run(): void {
 		let alreadyComputedScore = false;
+		this.requestZoneData();
+		
 		for (const name in Game.rooms) {
 
 			const room: Room = Game.rooms[name];

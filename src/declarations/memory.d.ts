@@ -34,7 +34,7 @@ interface Memory {
 		verbosity?: number;
 		workerIndex?: number;
 	};
-
+	zoneRooms: { [roomName: string]: { [type: string]: number} };
 	[otherProperty: string]: any;
 }
 
