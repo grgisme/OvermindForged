@@ -40,6 +40,8 @@ To combat the stall problem and get the bot compatible with modern server API st
 
 ### Integrated Community Issue Resolutions
 In addition to pull request integrations, several fatal bugs identified on the legacy issue tracker have been addressed to stabilize TickForge execution:
+- **TickForge Strict-Mode Parity (Memory GC Bug)**: Guarded cleanup routines in `Memory.ts` (`cleanCreeps`, `cleanColonies`, `cleanFlags`) to avoid illegal `delete global["undefined"]` calls which induce full V8 unhandled errors under strict `isolated-vm` execution on both the native MMO and TickForge instances. 
+- **TickForge Feature Stability (Unowned Construction Site Checks)**: Expanded `RoomPlanner.ts` `removeMisplacedConstructionSites()` evaluating `site.owner` references with proper null/falsy protections to comfortably handle externally injected structural ladder targets.
 - **Issue #152 (SourceReaperOverlord paralysis)**: Fixes a severe bug where center-core SK rooms lacking a `KeeperLair` caused Reapers to loop `goTo()` calls indefinitely.
 - **Issue #157 (Worker Economy Dogpiling)**: Fixes early-game pacing limitations where `Workers` would cluster onto identically-weighted singular `build` or `repair` targets. Tasks are now weighted against their concurrent targeting densities via `minBy` distancing.
 - **Issue #205 (room.drops TypeError exception)**: Hardened the `Overseer` logistics array mappings by adding `Array.isArray()` checks to mitigate prototype poisoning cascading into pipeline exceptions.

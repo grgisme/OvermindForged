@@ -256,7 +256,7 @@ export class Mem {
 		for (const name in Memory.creeps) {
 			if (!Game.creeps[name]) {
 				delete Memory.creeps[name];
-				delete global[name];
+				if (name !== 'undefined') delete global[name];
 			}
 		}
 	}
@@ -266,7 +266,7 @@ export class Mem {
 		for (const name in Memory.flags) {
 			if (!Game.flags[name]) {
 				delete Memory.flags[name];
-				delete global[name];
+				if (name !== 'undefined') delete global[name];
 			}
 		}
 	}
@@ -279,7 +279,7 @@ export class Mem {
 				// Delete only if "persistent" is not set - use case: praise rooms
 				if (!Memory.colonies[name].persistent) {
 					delete Memory.colonies[name];
-					delete global[name];
+					if (name !== 'undefined') delete global[name];
 				}
 			}
 		}

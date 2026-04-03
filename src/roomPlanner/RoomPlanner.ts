@@ -560,7 +560,7 @@ export class RoomPlanner {
 	 */
 	private removeMisplacedConstructionSites() {
 		for (const site of this.colony.room.find(FIND_CONSTRUCTION_SITES)) {
-			if (site.owner.username != MY_USERNAME) {
+			if (site.owner && site.owner.username != MY_USERNAME) {
 				site.remove();
 			} else if (!this.structureShouldBeHere(site.structureType, site.pos)) {
 				site.remove();
